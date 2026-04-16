@@ -215,8 +215,12 @@
                 }
                 renderUIFromSlug(activePage);
             } catch (err) {
-                console.error("Upload error:", err);
-                alert("Gagal mengunggah: " + (err.message || "Terjadi kesalahan tidak dikenal."));
+                console.error("Upload error detail:", err);
+                let errorMsg = err.message || "Terjadi kesalahan tidak dikenal.";
+                if (err.response && err.response.data) {
+                    errorMsg += " Detail: " + JSON.stringify(err.response.data);
+                }
+                alert("Gagal mengunggah: " + errorMsg);
                 btnLabel.innerText = "GANTI VIDEO POCKETBASE";
             }
         }
