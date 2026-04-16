@@ -344,7 +344,67 @@
                         </div>
                     `;
                     break;
-                case 'setup': breadcrumbPage.innerText = 'Instalasi'; html = `<div class="space-y-8"><h1 class="text-5xl font-black text-slate-900 tracking-tight">Setting Aplikasi</h1>${getVideoUI('Instalasi & Login', 'setup')}</div>`; break;
+                case 'setup':
+                    breadcrumbPage.innerText = 'Instalasi';
+                    html = `
+                        <div class="space-y-12">
+                            <div class="space-y-4">
+                                <h1 class="text-5xl font-black text-slate-900 tracking-tight">Setting Aplikasi</h1>
+                                <p class="text-slate-500 text-lg">Ikuti panduan langkah demi langkah di bawah ini untuk memasang aplikasi Seagma Presence di perangkat Anda.</p>
+                            </div>
+                            
+                            ${getVideoUI('Instalasi & Login', 'setup')}
+                            
+                            <div class="space-y-8 mt-12">
+                                <h3 class="text-2xl font-black text-slate-900 flex items-center gap-3">
+                                    <i data-lucide="list-checks" class="text-blue-600 w-8 h-8"></i>
+                                    Alur Instalasi APK
+                                </h3>
+                                
+                                <div class="grid gap-4">
+                                    <div class="flex gap-6 p-6 bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                                        <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-black text-xl shrink-0 shadow-lg shadow-blue-100">1</div>
+                                        <div class="space-y-1">
+                                            <h4 class="font-bold text-lg text-slate-900">Download APK</h4>
+                                            <p class="text-slate-500 text-sm">Unduh file paket aplikasi (APK) melalui link resmi yang disediakan.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex gap-6 p-6 bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                                        <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-black text-xl shrink-0 shadow-lg shadow-blue-100">2</div>
+                                        <div class="space-y-1">
+                                            <h4 class="font-bold text-lg text-slate-900">Izin Instalasi</h4>
+                                            <p class="text-slate-500 text-sm">Buka file dan berikan izin "Install dari sumber tidak dikenal" jika diminta oleh sistem Android.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex gap-6 p-6 bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                                        <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-black text-xl shrink-0 shadow-lg shadow-blue-100">3</div>
+                                        <div class="space-y-1">
+                                            <h4 class="font-bold text-lg text-slate-900">Lewati Play Protect</h4>
+                                            <p class="text-slate-500 text-sm">Jika muncul peringatan Google Play Protect, pilih <strong>"Tetap Instal (Install Anyway)"</strong>.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex gap-6 p-6 bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                                        <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-black text-xl shrink-0 shadow-lg shadow-blue-100">4</div>
+                                        <div class="space-y-1">
+                                            <h4 class="font-bold text-lg text-slate-900">Abaikan Pemindaian Pihak Ketiga</h4>
+                                            <p class="text-slate-500 text-sm">Abaikan atau lewati jika ada aplikasi antivirus pihak ketiga (seperti Avast/AVG) yang mencoba memindai APK.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex gap-6 p-6 bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                                        <div class="w-12 h-12 bg-green-500 text-white rounded-2xl flex items-center justify-center font-black text-xl shrink-0 shadow-lg shadow-green-100">5</div>
+                                        <div class="space-y-1">
+                                            <h4 class="font-bold text-lg text-slate-900">Instalasi Selesai</h4>
+                                            <p class="text-slate-500 text-sm">Tunggu proses pemasangan hingga selesai, lalu klik <strong>"Buka"</strong> untuk menjalankan aplikasi.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    break;
                 case 'clock-in': breadcrumbPage.innerText = 'Presensi Masuk'; html = `<div class="space-y-8"><h1 class="text-5xl font-black text-slate-900 tracking-tight">Presensi Masuk</h1>${getVideoUI('Tutorial Clock-In', 'clock-in')}</div>`; break;
                 case 'clock-out': breadcrumbPage.innerText = 'Presensi Pulang'; html = `<div class="space-y-8"><h1 class="text-5xl font-black text-slate-900 tracking-tight">Presensi Pulang</h1>${getVideoUI('Tutorial Clock-Out', 'clock-out')}</div>`; break;
                 case 'overtime': breadcrumbPage.innerText = 'Lembur'; html = `<div class="space-y-8"><h1 class="text-5xl font-black text-slate-900 tracking-tight">Klaim Lembur</h1>${getVideoUI('Input Data Lembur', 'overtime')}</div>`; break;
