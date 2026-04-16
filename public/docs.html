@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SeagmaDocs - Dokumentasi Sistem Presensi</title>
+    <!-- Framework & Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- PocketBase Standalone SDK -->
+    <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .phone-container {
+            position: relative; width: 280px; height: 580px; margin: 0 auto;
+            border: 12px solid #1e293b; border-radius: 36px; overflow: hidden;
+            background: #000; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .phone-notch {
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 120px; height: 24px; background: #1e293b;
+            border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 10;
+        }
+        .admin-badge {
+            position: fixed; bottom: 1.5rem; right: 1.5rem; background-color: #0f172a; color: white; padding: 0.75rem 1.25rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); display: flex; align-items: center; gap: 0.75rem; z-index: 90; border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-50/50 text-slate-900 selection:bg-blue-100">
+
+    <!-- NAVIGATION BAR -->
+    <header class="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-xl">
+        <div class="flex h-16 items-center px-4 md:px-8 max-w-screen-2xl mx-auto">
+            <button id="mobile-menu-btn" class="md:hidden mr-4 p-2 text-slate-500 hover:bg-slate-100 rounded-lg">
+                <i data-lucide="menu"></i>
+            </button>
+            <div id="admin-trigger" class="flex items-center gap-3 font-extrabold text-xl text-blue-600 cursor-pointer select-none group">
+                <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:rotate-6 transition-transform">
+                    <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+                </div>
+                <span>Seagma<span class="text-slate-900">Docs.</span></span>
+            </div>
+            <div class="hidden md:flex ml-auto items-center">
+                <div class="flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full border border-slate-200">
+                    <div id="status-dot" class="w-2 h-2 rounded-full bg-slate-400"></div>
+                    <span id="status-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">User View</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-screen-2xl mx-auto flex">
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 mt-16 bg-white border-r border-slate-200 transform -translate-x-full transition-transform md:translate-x-0 md:sticky md:top-16 md:h-[calc(100vh-4rem)] overflow-y-auto">
+            <nav class="p-8" id="nav-container"></nav>
+        </aside>
+
+        <!-- CONTENT AREA -->
+        <main class="flex-1 py-12 px-6 md:px-12 lg:px-24 max-w-5xl">
+            <div class="flex items-center text-[10px] font-bold text-slate-400 mb-6 uppercase tracking-[0.2em]">
+                <span id="breadcrumb-mode">Documentation</span>
+                <i data-lucide="chevron-right" class="w-3 h-3 mx-2"></i>
+                <span id="breadcrumb-page" class="text-blue-600">Home</span>
+            </div>
+
+            <div id="content-render" class="fade-in">
+                <!-- Konten akan dimuat di sini oleh JavaScript -->
+            </div>
+        </main>
+    </div>
+
+    <!-- ADMIN OVERLAY INDICATOR -->
+    <div id="admin-indicator" class="admin-badge hidden animate-bounce">
+        <div class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_#22c55e]"></div>
+        <span>Admin Mode: Edit Enabled</span>
+        <button onclick="logoutAdmin()" class="p-1 hover:bg-white/10 rounded ml-1 transition-colors">
+            <i data-lucide="x-circle" class="w-4 h-4 text-slate-400"></i>
+        </button>
+    </div>
+
+    <!-- HIDDEN LOGIN MODAL -->
+    <div id="admin-modal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[100] hidden flex items-center justify-center p-6">
+        <div class="bg-white rounded-[40px] p-10 max-w-sm w-full shadow-2xl space-y-8">
+            <div class="text-center space-y-2">
+                <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-blue-100 shadow-inner">
+                    <i data-lucide="shield-lock" class="w-10 h-10"></i>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900">Admin Gate</h3>
+                <p class="text-sm text-slate-500">Masukkan Password PocketBase Administrasi</p>
+            </div>
+            <input type="password" id="admin-pass" placeholder="••••••••" class="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 outline-none text-center font-bold text-lg tracking-[0.2em] transition-all">
+            <div class="flex flex-col gap-3">
+                <button onclick="verifyAdmin()" class="w-full py-4 rounded-2xl font-bold bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all active:scale-95">Verifikasi PB</button>
+                <button onclick="closeAdminModal()" class="w-full py-2 text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors">Batalkan Akses</button>
+            </div>
+            <p id="admin-error" class="text-center text-xs text-red-500 font-bold hidden">Gagal Login! Password salah.</p>
+        </div>
+    </div>
+
+    <div id="overlay" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden"></div>
+
+    <script>
+        const pb = new PocketBase('https://db-seagmapresence.sagamuda.cloud');
+        
+        let activePage = 'welcome';
+        let isAdminAuthorized = false;
+        let clickCount = 0;
+        let lastClickTime = 0;
+        let pBDataRecord = null;
+
+        const navigationData = [
+            {
+                category: 'Mulai',
+                icon: 'rocket',
+                items: [
+                    { id: 'welcome', label: 'Selamat Datang' },
+                    { id: 'setup', label: 'Panduan Instalasi' }
+                ]
+            },
+            {
+                category: 'Operasional',
+                icon: 'activity',
+                items: [
+                    { id: 'clock-in', label: 'Presensi Masuk' },
+                    { id: 'clock-out', label: 'Presensi Pulang' }
+                ]
+            },
+            {
+                category: 'Administrasi',
+                icon: 'folder-heart',
+                items: [
+                    { id: 'overtime', label: 'Lembur' },
+                    { id: 'leave', label: 'Izin & Sakit' }
+                ]
+            }
+        ];
+
+        // LOGIKA KHUSUS ADMIN PAGE: Jika bukan halaman /docs, minta login
+        const isStrictAdminPage = window.location.pathname.includes('/admin');
+
+        function setupAdminDashboard() {
+            isAdminAuthorized = true;
+            document.getElementById('admin-indicator').classList.remove('hidden');
+            document.getElementById('status-tag').innerText = "Admin View";
+            document.getElementById('status-tag').classList.replace('text-slate-500', 'text-green-600');
+            document.getElementById('status-dot').classList.replace('bg-slate-400', 'bg-green-500');
+            renderUIFromSlug(activePage);
+        }
+
+        async function verifyAdmin() {
+            const pass = document.getElementById('admin-pass').value;
+            try {
+                await pb.admins.authWithPassword('sagamuda.id@gmail.com', pass);
+                setupAdminDashboard();
+                closeAdminModal();
+            } catch (err) {
+                const input = document.getElementById('admin-pass');
+                input.classList.add('border-red-500', 'bg-red-50');
+                document.getElementById('admin-error').classList.remove('hidden');
+                setTimeout(() => input.classList.remove('border-red-500', 'bg-red-50'), 600);
+            }
+        }
+
+        function logoutAdmin() {
+            pb.authStore.clear();
+            isAdminAuthorized = false;
+            if (isStrictAdminPage) {
+                location.reload(); // Refresh untuk minta login lagi di halaman admin
+            } else {
+                document.getElementById('admin-indicator').classList.add('hidden');
+                document.getElementById('status-tag').innerText = "User View";
+                document.getElementById('status-tag').classList.replace('text-green-600', 'text-slate-500');
+                document.getElementById('status-dot').classList.replace('bg-green-500', 'bg-slate-400');
+                renderUIFromSlug(activePage);
+            }
+        }
+
+        function closeAdminModal() {
+            if (isStrictAdminPage && !isAdminAuthorized) {
+                alert("Halaman ini memerlukan akses Admin.");
+                return;
+            }
+            document.getElementById('admin-modal').classList.add('hidden');
+            document.getElementById('admin-pass').value = '';
+        }
+
+        async function triggerVideoUpload(inputElement) {
+            if (!inputElement.files || inputElement.files.length === 0) return;
+            const file = inputElement.files[0];
+            const formData = new FormData();
+            formData.append('video_user', file);
+            const btnLabel = document.getElementById('upload-btn-label');
+            btnLabel.innerText = "MENGUNGGAH...";
+            try {
+                if (!pBDataRecord) {
+                    formData.append('slug', activePage);
+                    let fallbackTitle = "Video " + activePage;
+                    navigationData.forEach(g => {
+                        let f = g.items.find(i => i.id === activePage);
+                        if (f) fallbackTitle = f.label;
+                    });
+                    formData.append('title', fallbackTitle);
+                    pBDataRecord = await pb.collection('documentation').create(formData);
+                    alert("Record baru berhasil dibuat!");
+                } else {
+                    pBDataRecord = await pb.collection('documentation').update(pBDataRecord.id, formData);
+                    alert("Video Diperbarui!");
+                }
+                renderUIFromSlug(activePage);
+            } catch (err) {
+                alert("Gagal mengunggah.");
+                btnLabel.innerText = "GANTI VIDEO POCKETBASE";
+            }
+        }
+
+        function getVideoUI(titleFallback, slugId) {
+            let videoUrl = null;
+            let dynamicTitle = titleFallback;
+            let dynamicContent = `"Pastikan Anda mengikuti instruksi dalam video ini agar presensi tercatat dengan valid di sistem database."`;
+            if (pBDataRecord) {
+                dynamicTitle = pBDataRecord.title || titleFallback;
+                if(pBDataRecord.content_user) dynamicContent = pBDataRecord.content_user;
+                if(pBDataRecord.video_user) videoUrl = pb.files.getURL(pBDataRecord, pBDataRecord.video_user);
+            }
+            const editBtn = isAdminAuthorized ? `
+                <div class="absolute top-6 right-6 z-30">
+                    <label class="bg-rose-600 text-white px-5 py-3 rounded-2xl text-xs font-black shadow-xl hover:bg-rose-700 flex items-center gap-2 border-4 border-white cursor-pointer transform transition-transform hover:scale-105 active:scale-95">
+                        <i data-lucide="upload-cloud" class="w-4 h-4"></i> 
+                        <span id="upload-btn-label">GANTI VIDEO POCKETBASE</span>
+                        <input type="file" accept="video/mp4" class="hidden" onchange="triggerVideoUpload(this)">
+                    </label>
+                </div>
+            ` : '';
+            const phoneScreenContent = videoUrl 
+                ? `<video src="${videoUrl}" controls class="w-full h-full object-cover bg-slate-900"></video>`
+                : `<div class="w-full h-full flex flex-col items-center justify-center bg-slate-900 relative">
+                        <div class="w-20 h-20 bg-blue-600/20 rounded-full flex items-center justify-center mb-6">
+                            <i data-lucide="play" class="text-blue-500 w-10 h-10 fill-blue-500"></i>
+                        </div>
+                        <span class="text-[9px] font-black text-white/30 uppercase tracking-[0.4em] text-center px-4">TUTORIAL VIDEO PREVIEW</span>
+                   </div>`;
+            return `
+                <div class="my-12 flex flex-col items-center lg:flex-row gap-12 bg-white p-10 rounded-[48px] border border-slate-200 shadow-sm relative group">
+                    ${editBtn}
+                    <div class="phone-container shrink-0">
+                        <div class="phone-notch"></div>
+                        ${phoneScreenContent}
+                    </div>
+                    <div class="flex-1 space-y-6">
+                        <div class="inline-flex px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black uppercase tracking-widest">Video Guide</div>
+                        <h3 class="text-3xl font-black text-slate-900 tracking-tight leading-tight">${dynamicTitle}</h3>
+                        <div class="text-slate-500 leading-relaxed text-lg italic">${dynamicContent}</div>
+                        ${isAdminAuthorized ? `
+                            <div class="bg-slate-900 text-slate-400 p-4 rounded-2xl font-mono text-xs border border-white/10 mt-6 overflow-hidden">
+                                <span class="text-rose-400"># System Info:</span><br>
+                                Collection: documentation<br>
+                                Record_ID: <span class="text-green-400">${pBDataRecord ? pBDataRecord.id : '⚠️ BELUM ADA RECORD'}</span><br>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSidebar() {
+            const navContainer = document.getElementById('nav-container');
+            let html = '';
+            navigationData.forEach(group => {
+                html += `
+                    <div class="mb-8">
+                        <h3 class="text-[10px] font-black text-slate-400 mb-4 uppercase tracking-[0.2em] flex items-center">
+                            <i data-lucide="${group.icon}" class="w-4 h-4 mr-2"></i> ${group.category}
+                        </h3>
+                        <ul class="space-y-1">
+                            ${group.items.map(item => `
+                                <li>
+                                    <button onclick="navigateTo('${item.id}')" 
+                                        class="w-full text-left px-4 py-3 rounded-2xl text-sm transition-all duration-200 ${activePage === item.id ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-100' : 'text-slate-600 hover:bg-slate-50 hover:pl-6'}">
+                                        ${item.label}
+                                    </button>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `;
+            });
+            navContainer.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        async function navigateTo(id) {
+            activePage = id;
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('overlay').classList.add('hidden');
+            window.scrollTo(0, 0);
+            renderSidebar();
+            await fetchPocketBaseData(id);
+        }
+
+        async function fetchPocketBaseData(slugId) {
+            const container = document.getElementById('content-render');
+            if (slugId !== 'welcome') {
+                container.innerHTML = `<div class="py-20 text-center"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto text-blue-600"></i><p class="mt-4 text-slate-400 font-bold tracking-widest text-sm uppercase">Memuat Data...</p></div>`;
+                lucide.createIcons();
+                try {
+                    pBDataRecord = await pb.collection('documentation').getFirstListItem(`slug="${slugId}"`);
+                } catch (err) {
+                    pBDataRecord = null;
+                }
+            } else { pBDataRecord = null; }
+            renderUIFromSlug(slugId);
+        }
+
+        function renderUIFromSlug(slugId) {
+            const container = document.getElementById('content-render');
+            const breadcrumbPage = document.getElementById('breadcrumb-page');
+            let html = '';
+            switch(slugId) {
+                case 'welcome':
+                    breadcrumbPage.innerText = 'Home';
+                    html = `
+                        <div class="space-y-10">
+                            <h1 class="text-6xl font-black text-slate-900 tracking-tighter leading-none">Dokumentasi <br><span class="text-blue-600">Seagma Presence.</span></h1>
+                            <p class="text-2xl text-slate-500 leading-relaxed max-w-2xl font-light">Panduan pusat untuk sistem absensi karyawan berbasis lokasi dan pengenalan wajah.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8">
+                                <div class="bg-white p-8 rounded-[40px] border border-slate-200 hover:border-blue-500 transition-colors cursor-pointer shadow-sm hover:shadow-xl" onclick="navigateTo('clock-in')">
+                                    <i data-lucide="arrow-right-circle" class="text-blue-600 mb-4 w-10 h-10"></i>
+                                    <h3 class="font-bold text-2xl mb-2 tracking-tight">Cepat Absen</h3>
+                                    <p class="text-sm text-slate-500 leading-relaxed">Lihat tutorial singkat cara masuk dan pulang kerja.</p>
+                                </div>
+                                <div class="bg-white p-8 rounded-[40px] border border-slate-200 hover:border-blue-500 transition-colors cursor-pointer shadow-sm hover:shadow-xl" onclick="navigateTo('setup')">
+                                    <i data-lucide="settings" class="text-slate-400 mb-4 w-10 h-10"></i>
+                                    <h3 class="font-bold text-2xl mb-2 tracking-tight">Instalasi</h3>
+                                    <p class="text-sm text-slate-500 leading-relaxed">Cara download dan setup aplikasi di HP Android/iOS.</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'setup': breadcrumbPage.innerText = 'Instalasi'; html = `<div class="space-y-8"><h1 class="text-5xl font-black text-slate-900 tracking-tight">Setting Aplikasi</h1>${getVideoUI('Instalasi & Login', 'setup')}</div>`; break;
+                case 'clock-in': breadcrumbPage.innerText = 'Presensi Masuk'; html = `<div class="space-y-8"><h1 class="text-5xl font-black text-slate-900 tracking-tight">Presensi Masuk</h1>${getVideoUI('Tutorial Clock-In', 'clock-in')}</div>`; break;
+                case 'clock-out': breadcrumbPage.innerText = 'Presensi Pulang'; html = `<div class="space-y-8"><h1 class="text-5xl font-black text-slate-900 tracking-tight">Presensi Pulang</h1>${getVideoUI('Tutorial Clock-Out', 'clock-out')}</div>`; break;
+                case 'overtime': breadcrumbPage.innerText = 'Lembur'; html = `<div class="space-y-8"><h1 class="text-5xl font-black text-slate-900 tracking-tight">Klaim Lembur</h1>${getVideoUI('Input Data Lembur', 'overtime')}</div>`; break;
+                case 'leave': breadcrumbPage.innerText = 'Izin & Sakit'; html = `<div class="space-y-8"><h1 class="text-5xl font-black text-slate-900 tracking-tight">Izin & Sakit</h1>${getVideoUI('Formulir Izin', 'leave')}</div>`; break;
+            }
+            container.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        document.getElementById('mobile-menu-btn').onclick = () => {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+            document.getElementById('overlay').classList.toggle('hidden');
+        };
+
+        // GESTURE PINTU RAHASIA (Hanya diaktifkan jika bukan halaman admin murni)
+        document.getElementById('admin-trigger').addEventListener('click', () => {
+            if (isStrictAdminPage) return;
+            const now = Date.now();
+            if (now - lastClickTime > 2000) clickCount = 0;
+            clickCount++;
+            lastClickTime = now;
+            if (clickCount === 5) {
+                clickCount = 0;
+                if (!isAdminAuthorized) {
+                    document.getElementById('admin-modal').classList.remove('hidden');
+                }
+            }
+        });
+
+        window.onload = () => {
+            renderSidebar();
+            
+            // LOGIKA PEMISAHAN:
+            if (isStrictAdminPage) {
+                // Halaman /admin selalu minta login atau masuk dashboard
+                if (pb.authStore.isValid && pb.authStore.isAdmin) {
+                    setupAdminDashboard();
+                } else {
+                    document.getElementById('admin-modal').classList.remove('hidden');
+                }
+            } else {
+                // Halaman /docs selalu default ke User View (Publik)
+                // Admin mode hanya bisa masuk via Gesture 5x klik
+                isAdminAuthorized = false;
+                document.getElementById('admin-indicator').classList.add('hidden');
+                document.getElementById('status-tag').innerText = "User View";
+            }
+
+            fetchPocketBaseData('welcome');
+        };
+    </script>
+</body>
+</html>
