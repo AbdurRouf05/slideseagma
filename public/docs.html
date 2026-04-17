@@ -658,8 +658,14 @@
                 }
             } else {
                 // Halaman /docs selalu default ke User View (Publik)
-                // Admin mode hanya bisa masuk via Gesture 5x klik
-                isAdminAuthorized = false;
+                // Kita cek tetap status admin-nya (supaya video muncul buat kita), 
+                // tapi TAMPILANNYA tetap mode user biasa.
+                if (pb.authStore.isValid && pb.authStore.isAdmin) {
+                    isAdminAuthorized = true; // Tetap izinkan akses data
+                    // Tampilan tetap disembunyikan (tidak panggil setupAdminDashboard)
+                } else {
+                    isAdminAuthorized = false;
+                }
                 document.getElementById('admin-indicator').classList.add('hidden');
                 document.getElementById('status-tag').innerText = "User View";
             }
