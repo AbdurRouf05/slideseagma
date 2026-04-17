@@ -406,10 +406,220 @@
                             </div>
                         </div>`;
                     break;
-                case 'clock-in': breadcrumbPage.innerText = 'Presensi Masuk'; html = `<div class="space-y-8"><h1 class="text-5xl font-black text-slate-900 tracking-tight">Presensi Masuk</h1>${getVideoUI('Tutorial Clock-In', 'clock-in')}</div>`; break;
-                case 'clock-out': breadcrumbPage.innerText = 'Presensi Pulang'; html = `<div class="space-y-8"><h1 class="text-5xl font-black text-slate-900 tracking-tight">Presensi Pulang</h1>${getVideoUI('Tutorial Clock-Out', 'clock-out')}</div>`; break;
-                case 'overtime': breadcrumbPage.innerText = 'Lembur'; html = `<div class="space-y-8"><h1 class="text-5xl font-black text-slate-900 tracking-tight">Klaim Lembur</h1>${getVideoUI('Input Data Lembur', 'overtime')}</div>`; break;
-                case 'leave': breadcrumbPage.innerText = 'Izin & Sakit'; html = `<div class="space-y-8"><h1 class="text-5xl font-black text-slate-900 tracking-tight">Izin & Sakit</h1>${getVideoUI('Formulir Izin', 'leave')}</div>`; break;
+                case 'clock-in':
+                    breadcrumbPage.innerText = 'Presensi Masuk';
+                    html = `
+                        <div class="space-y-12">
+                            <div class="space-y-4">
+                                <h1 class="text-5xl font-black text-slate-900 tracking-tight">Presensi Masuk</h1>
+                                <p class="text-slate-500 text-lg">Panduan melakukan absensi masuk harian di area kantor.</p>
+                            </div>
+                            
+                            ${getVideoUI('Tutorial Clock-In', 'clock-in')}
+                            
+                            <div class="space-y-8 mt-12">
+                                <h3 class="text-2xl font-black text-slate-900 flex items-center gap-3">
+                                    <i data-lucide="log-in" class="text-blue-600 w-8 h-8"></i>
+                                    Langkah-Langkah Masuk
+                                </h3>
+                                
+                                <div class="grid gap-4">
+                                    <div class="flex gap-6 p-6 bg-white rounded-3xl border border-slate-200 shadow-sm">
+                                        <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-black text-xl shrink-0">1</div>
+                                        <div class="space-y-1">
+                                            <h4 class="font-bold text-lg text-slate-900">Login Akun</h4>
+                                            <p class="text-slate-500 text-sm">Pastikan Anda login dengan akun yang benar dan aktif.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-6 p-6 bg-white rounded-3xl border border-slate-200 shadow-sm">
+                                        <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-black text-xl shrink-0">2</div>
+                                        <div class="space-y-1">
+                                            <h4 class="font-bold text-lg text-slate-900">Tombol Presensi</h4>
+                                            <p class="text-slate-500 text-sm">Tekan tombol presensi di sebelah bawah tengah berwarna kuning.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-6 p-6 bg-white rounded-3xl border border-slate-200 shadow-sm">
+                                        <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-black text-xl shrink-0">3</div>
+                                        <div class="space-y-1">
+                                            <h4 class="font-bold text-lg text-slate-900">Radius Kantor</h4>
+                                            <p class="text-slate-500 text-sm">Saat ingin check-in, pastikan Anda sudah berada di dalam area/radius kantor yang ditentukan.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-6 p-6 bg-white rounded-3xl border border-slate-200 shadow-sm">
+                                        <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-black text-xl shrink-0">4</div>
+                                        <div class="space-y-1">
+                                            <h4 class="font-bold text-lg text-slate-900">Verifikasi Wajah (Selfie)</h4>
+                                            <p class="text-slate-500 text-sm">Ambil foto selfie dengan wajah asli untuk keperluan review kehadiran oleh admin atau koordinator.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-6 p-6 bg-white rounded-3xl border border-slate-200 shadow-sm">
+                                        <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-black text-xl shrink-0">5</div>
+                                        <div class="space-y-1">
+                                            <h4 class="font-bold text-lg text-slate-900">Aktivasi Tombol</h4>
+                                            <p class="text-slate-500 text-sm">Jika semua syarat (lokasi & foto) terpenuhi, tombol presensi akan aktif dan bisa ditekan.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-6 p-6 bg-white rounded-3xl border border-slate-200 shadow-sm">
+                                        <div class="w-12 h-12 bg-green-500 text-white rounded-2xl flex items-center justify-center font-black text-xl shrink-0">6</div>
+                                        <div class="space-y-1">
+                                            <h4 class="font-bold text-lg text-slate-900">Selesai</h4>
+                                            <p class="text-slate-500 text-sm">Setelah berhasil absen, riwayat kehadiran akan muncul di dashboard aplikasi.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    break;
+                case 'clock-out':
+                    breadcrumbPage.innerText = 'Presensi Pulang';
+                    html = `
+                        <div class="space-y-12">
+                            <div class="space-y-4">
+                                <h1 class="text-5xl font-black text-slate-900 tracking-tight">Presensi Pulang</h1>
+                                <p class="text-slate-500 text-lg">Panduan mengakhiri shift kerja dan penggunaan fitur Gamas.</p>
+                            </div>
+                            
+                            ${getVideoUI('Tutorial Clock-Out', 'clock-out')}
+                            
+                            <div class="space-y-8 mt-12">
+                                <h3 class="text-2xl font-black text-slate-900 flex items-center gap-3">
+                                    <i data-lucide="log-out" class="text-rose-600 w-8 h-8"></i>
+                                    Langkah-Langkah Pulang
+                                </h3>
+                                
+                                <div class="grid gap-6">
+                                    <div class="p-8 bg-white rounded-[40px] border border-slate-200 shadow-sm space-y-4">
+                                        <div class="flex items-center gap-3 font-black text-slate-900 uppercase tracking-widest text-xs">
+                                            <span class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center">1</span>
+                                            Sama Seperti Check-in
+                                        </div>
+                                        <p class="text-slate-500 leading-relaxed">Lakukan prosedur yang sama seperti saat absen masuk: verifikasi lokasi dan foto selfie.</p>
+                                    </div>
+
+                                    <div class="p-8 bg-blue-50/50 rounded-[40px] border border-blue-100 shadow-sm space-y-6">
+                                        <div class="flex items-center gap-3 font-black text-blue-600 uppercase tracking-widest text-xs">
+                                            <span class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center">2</span>
+                                            Fitur GAMAS (Tugas Luar)
+                                        </div>
+                                        <div class="space-y-4 text-slate-600 text-sm leading-relaxed">
+                                            <p>Jika Anda bertugas di luar kota atau tidak berada di area kantor, gunakan fitur <strong>GAMAS</strong>:</p>
+                                            <ul class="list-disc pl-5 space-y-2">
+                                                <li>Isi formulir detail penugasan luar.</li>
+                                                <li>Laporkan lokasi pulang dan pekerjaan yang dilakukan.</li>
+                                                <li>Data akan masuk ke sistem untuk direview atau disetujui oleh admin/koordinator.</li>
+                                            </ul>
+                                            <div class="p-4 bg-white rounded-2xl border border-blue-100 text-xs italic">
+                                                *Fitur ini mencegah ketidakdisiplinan absen di luar kantor tanpa alasan resmi.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-8 bg-white rounded-[40px] border border-slate-200 shadow-sm space-y-4">
+                                        <div class="flex items-center gap-3 font-black text-slate-900 uppercase tracking-widest text-xs">
+                                            <span class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center">3</span>
+                                            Pencatatan Sistem
+                                        </div>
+                                        <p class="text-slate-500 leading-relaxed">Jika tidak menggunakan Gamas, absen pulang akan langsung tercatat di sistem dan histori aplikasi setelah tombol ditekan.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    break;
+                case 'overtime':
+                    breadcrumbPage.innerText = 'Lembur';
+                    html = `
+                        <div class="space-y-12">
+                            <div class="space-y-4">
+                                <h1 class="text-5xl font-black text-slate-900 tracking-tight">Klaim Lembur</h1>
+                                <p class="text-slate-500 text-lg">Prosedur pengajuan jam kerja tambahan setelah waktu shift berakhir.</p>
+                            </div>
+                            
+                            ${getVideoUI('Input Data Lembur', 'overtime')}
+                            
+                            <div class="space-y-8 mt-12">
+                                <h3 class="text-2xl font-black text-slate-900 flex items-center gap-3">
+                                    <i data-lucide="clock" class="text-orange-500 w-8 h-8"></i>
+                                    Alur Pengajuan Lembur
+                                </h3>
+                                
+                                <div class="relative pl-12 space-y-8 before:absolute before:left-6 before:top-2 before:bottom-2 before:w-1 before:bg-slate-100">
+                                    <div class="relative">
+                                        <div class="absolute -left-12 w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-black z-10">1</div>
+                                        <p class="font-bold text-slate-900">Lakukan absen pulang seperti biasa di aplikasi.</p>
+                                    </div>
+                                    <div class="relative">
+                                        <div class="absolute -left-12 w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-black z-10">2</div>
+                                        <p class="font-bold text-slate-900 leading-tight">Sistem akan mendeteksi jika waktu checkout melebihi jadwal shift.</p>
+                                        <p class="text-slate-500 text-sm mt-2 font-medium bg-slate-50 p-3 rounded-xl border border-slate-200">Akan muncul dialog pilihan: <strong>"Telat Checkout"</strong> atau <strong>"Lembur"</strong>.</p>
+                                    </div>
+                                    <div class="relative">
+                                        <div class="absolute -left-12 w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-black z-10">3</div>
+                                        <p class="font-bold text-slate-900 leading-tight">Jika pilih "Telat Checkout":</p>
+                                        <p class="text-slate-500 text-sm mt-1">Absensi akan tercatat sebagai pulang biasa tanpa tambahan jam kerja.</p>
+                                    </div>
+                                    <div class="relative">
+                                        <div class="absolute -left-12 w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-black z-10">4</div>
+                                        <p class="font-bold text-slate-900 leading-tight">Jika pilih "Lembur":</p>
+                                        <p class="text-slate-500 text-sm mt-2">Unggah <strong>FOTO PEKERJAAN</strong> dan isi <strong>DESKRIPSI</strong> pekerjaan yang diselesaikan, lalu klik Kirim Klaim Lembur.</p>
+                                    </div>
+                                    <div class="relative">
+                                        <div class="absolute -left-12 w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-black z-10">5</div>
+                                        <p class="font-bold text-slate-900">Klaim akan berstatus "Pending" menunggu persetujuan Admin/Koordinator.</p>
+                                    </div>
+                                    <div class="relative">
+                                        <div class="absolute -left-12 w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center text-xs font-black z-10">6</div>
+                                        <p class="font-bold text-slate-900 leading-tight">Review Akhir:</p>
+                                        <p class="text-slate-500 text-sm mt-2">Jika diterima, lembur akan tercatat dan Anda mendapat notifikasi. Jika ditolak, record akan tetap berupa absen masuk biasa.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    break;
+                case 'leave':
+                    breadcrumbPage.innerText = 'Izin & Sakit';
+                    html = `
+                        <div class="space-y-12">
+                            <div class="space-y-4">
+                                <h1 class="text-5xl font-black text-slate-900 tracking-tight">Perizinan</h1>
+                                <p class="text-slate-500 text-lg">Cara mengajukan izin sakit, cuti, atau keperluan mendesak lainnya.</p>
+                            </div>
+                            
+                            ${getVideoUI('Formulir Izin', 'leave')}
+                            
+                            <div class="space-y-8 mt-12">
+                                <h3 class="text-2xl font-black text-slate-900 flex items-center gap-3">
+                                    <i data-lucide="file-text" class="text-purple-600 w-8 h-8"></i>
+                                    Prosedur Pengajuan Izin
+                                </h3>
+                                
+                                <div class="grid gap-4">
+                                    <div class="flex gap-6 p-6 bg-white rounded-3xl border border-slate-200">
+                                        <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center font-black text-xs shrink-0">01</div>
+                                        <p class="text-slate-700 font-bold self-center">Buka menu "Perizinan" di halaman utama aplikasi.</p>
+                                    </div>
+                                    <div class="flex gap-6 p-6 bg-white rounded-3xl border border-slate-200">
+                                        <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center font-black text-xs shrink-0">02</div>
+                                        <p class="text-slate-700 font-bold self-center">Pilih kategori izin melalui menu dropdown (Misal: Sakit, Cuti, Izin).</p>
+                                    </div>
+                                    <div class="flex gap-6 p-6 bg-white rounded-3xl border border-slate-200">
+                                        <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center font-black text-xs shrink-0">03</div>
+                                        <p class="text-slate-700 font-bold self-center">Isi alasan atau deskripsi detail untuk perizinan tersebut.</p>
+                                    </div>
+                                    <div class="flex gap-6 p-6 bg-purple-50 rounded-3xl border border-purple-100">
+                                        <div class="w-10 h-10 bg-purple-600 text-white rounded-xl flex items-center justify-center font-black text-xs shrink-0 shadow-lg shadow-purple-200">04</div>
+                                        <div class="space-y-1">
+                                            <h4 class="font-bold text-slate-900">Lampirkan Bukti (Wajib untuk Sakit)</h4>
+                                            <p class="text-slate-500 text-sm leading-relaxed">Pilih file foto/dokumen sebagai bukti konfirmasi (Misal: Surat Dokter).</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-6 p-6 bg-white rounded-3xl border border-slate-200">
+                                        <div class="w-10 h-10 bg-green-500 text-white rounded-xl flex items-center justify-center font-black text-xs shrink-0">05</div>
+                                        <p class="text-slate-700 font-bold self-center">Klik "Kirim Pengajuan". Data akan masuk ke Admin untuk divalidasi.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    break;
             }
             container.innerHTML = html;
             lucide.createIcons();
